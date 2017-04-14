@@ -1,5 +1,8 @@
 # Python
 # This is a practice for Python
 
-#33. ÌâÄ¿£º°´¶ººÅ·Ö¸ôÁÐ±í¡£
-#41. simulate the usage of static parameter
+
+#33. ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·Ö¸ï¿½ï¿½Ð±ï¿½
+#41. simulate the usage of static
+#49 . usage of lambda and __name__ =='__main__'
+
