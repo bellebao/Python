@@ -1,3 +1,10 @@
 
 1. the diff between input and raw_input.
 input need formal format, like "xxx", raw_input can enter raw data.
+
+2. 原始字符串 以 r 开头，反斜线/ 不需要转义。 不能在结尾加 /
+   字符串需要 // 转义
+3. 列表 可以修改，元组不能。
+   列表可以包含其他列表， 如数据库。
+   列表的所有元素是有编号的，从左0 开始， 从最后 -1 开始。
+   分片 第一个索引包含在分片内，第二个不包含，如 NUM = [1,2,3,4,5,6,7]， 对于[3:6], 只包含4，5，6
