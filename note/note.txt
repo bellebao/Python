@@ -1,0 +1,3 @@
+
+1. the diff between input and raw_input.
+input need formal format, like "xxx", raw_input can enter raw data.
