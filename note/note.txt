@@ -27,3 +27,16 @@ input need formal format, like "xxx", raw_input can enter raw data.
    元组的两个重要不可以用列表替代的原因。
    a. 元组可以在映射(和集合的成员)中当作key使用，列表不行。
    b. 元组作为很多内建函数和方法的返回值存在。
+5. 字符串
+   % 字符串格式化操作符， eg  print ("hello, %s, %s enough for you", ('world', 'hot'))
+   注意 内容一般是： 一个值，如字符串和数字，或者 多个值必须用元组或字典。只有元组和字典可以格式化一个以上的值。
+   可以使用* 作为字段宽度或者精度。 eg. '%.*s' %(5, helloworld)   >> 'hello'
+   字符串方法
+   ＊find 可以在较长的字符串中找子串， 返回最左端索引。没有返回-1
+   ＊join 是split的逆方法， 需要被连接的元素必须是字符串。
+   ＊lower 返回小写 title 标题，第一个大写字母。 islower, capitalize, swapcase, title, istitle, upper, isupper
+   ＊replace 替换字符串
+   ＊split(分隔符)
+   ＊strip 去除两侧空格
+   ＊translate, 只处理单个字符，可以同时进行多个替换， maketrans()：接受两个参数，等长的字符串，第一个字符串的每个字符用第二个字符串中同位置的字符替代。
+   ＊
