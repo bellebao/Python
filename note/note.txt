@@ -22,7 +22,7 @@ input need formal format, like "xxx", raw_input can enter raw data.
        * reverse 反向
        * sort    原位置排序（默认升序），注意是 在原位置排序，改变原来的列表。返回是空值。另有两个可选参数 key和reverse
        * sorted  排序，并返回列表副本，原序列不变
-4. tuple 元组 也是一种序列，但是不能修改。 用逗号分隔，或者圆括号括起来。一个值的元祖 也要加个逗号，eg 42,
+4. tuple 元组 也是一种序列，但是不能修改。 用逗号分隔，或者() 圆括号括起来。一个值的元组 也要加个逗号，eg 42,
    函数与list基本一样
    元组的两个重要不可以用列表替代的原因。
    a. 元组可以在映射(和集合的成员)中当作key使用，列表不行。
@@ -39,4 +39,14 @@ input need formal format, like "xxx", raw_input can enter raw data.
    ＊split(分隔符)
    ＊strip 去除两侧空格
    ＊translate, 只处理单个字符，可以同时进行多个替换， maketrans()：接受两个参数，等长的字符串，第一个字符串的每个字符用第二个字符串中同位置的字符替代。
-   ＊
+6. dict 字典
+   字典是由多个key和其对应的value构成的key-value对组成的。 中间用:隔开， 项用,隔开。字典用{} 括起来。
+   a. 	基本操作
+      	len(d) 
+      	d[k], 		返回K对应的value
+      	d[k] = v, 	赋值
+	del d[k]
+	k in d, 	检查d中是否有K
+   b.	特点
+	key 可以是任意不可变类型。
+	自动添加， 即使字典开始不存在，也可以赋值，然后就会建立对应项。
