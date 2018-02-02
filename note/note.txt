@@ -39,7 +39,7 @@ input need formal format, like "xxx", raw_input can enter raw data.
    ＊split(分隔符)
    ＊strip 去除两侧空格
    ＊translate, 只处理单个字符，可以同时进行多个替换， maketrans()：接受两个参数，等长的字符串，第一个字符串的每个字符用第二个字符串中同位置的字符替代。
-6. dict 字典
+6. dict 字典 字典是无序的
    字典是由多个key和其对应的value构成的key-value对组成的。 中间用:隔开， 项用,隔开。字典用{} 括起来。
    a. 	基本操作
       	len(d) 
@@ -50,3 +50,20 @@ input need formal format, like "xxx", raw_input can enter raw data.
    b.	特点
 	key 可以是任意不可变类型。
 	自动添加， 即使字典开始不存在，也可以赋值，然后就会建立对应项。
+   c.   方法
+	1. clear. 清楚字典中所有的项。
+	2. copy  shallow copy， 浅复制， 只复制key，值还是相同的，不是副本。
+                 deep copy，深复制，需要 from copy import deepcopy 才能使用。
+ 	3. fromkeys 使用给定的key建立新字典， 值为none
+	4. get 访问字典，eg. d.get('key')
+	5. has_key 是否有特定的key
+	6. items 字典的所有项以列表方式返回。没有特定顺序  d.items()
+	 . iteritems, 与items类似，返回一个迭代器对象而不是列表。
+		eg. >> it = d.iteritems()
+		    >> list(it)
+	7. keys, iterkeys.  keys将key以列表返回，iterkeys 返回针对key的迭代器。
+	8. pop  对于给定的key, 移除key-value
+ 	9. popitem.  弹出随机项。
+        10. setdefault
+	11. update 用一个字典项更新一个字典。
+	12. value ， itervalue
