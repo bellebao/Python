@@ -67,3 +67,9 @@ input need formal format, like "xxx", raw_input can enter raw data.
         10. setdefault
 	11. update 用一个字典项更新一个字典。
 	12. value ， itervalue
+7.  比较运算符
+    	x == y, x<y,x>y, x>=y, x<=y, x!=y, x is y, x is not y, x in y, x not in y.
+8.  比尔运算符 and, or
+9.  range(a, b), 包含a, 不包含b
+
+	
