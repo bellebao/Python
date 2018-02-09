@@ -77,7 +77,14 @@ Section 1
 
 Section 2
 1. 函数 def
-	 参数存储在局部作用域（local scope）
+   a.	 参数存储在局部作用域（local scope）
+	 位置参数，位置很重要。 为了简便，可以提供参数名。
+	 使用参数名提供的参数叫做’关键字参数‘ eg. store(patient = 'mr. brian', hours = 10) instead of store(mr.brain, 10)
+	 位置参数和关键字参数也可以联合使用。
+	 b.  *参数 参数前的星号 将所有的值放置在同一个元组里。 
+	     **参数，可以处理关键字参数，返回字典。
+2. 全局变量，前面加 global. globals()函数可以获取全局变量值。
+	 
 	 
 
 	
