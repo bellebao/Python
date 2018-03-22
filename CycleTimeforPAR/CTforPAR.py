@@ -11,7 +11,7 @@ import string
 #import win32com.client
 import re
 import datetime
-
+f_output = r"C:\IOSystems\Agusta\FCR\PPC\CT_output.txt"
 #--------------------------------CONSTANTS-------------------------------------
 wdFormatText = 2
 
@@ -41,10 +41,8 @@ def TraceParser(filename):
     
     global filenum
     #global CycleTime
-    j=0
     fileext = ""
     actionline = []
-    Inreviewline = 0
     actionflag = 0
 
     #filename = str.lower(filename)
@@ -72,33 +70,25 @@ def TraceParser(filename):
             
             if(actionflag == 1):
                 actionline.append(line)
-                
-        #print (actionline)
-        raisedTime = re.search(r"(\d{2}-(DEC|NOV|OCT|SEP|AUG|JUL|JUN|MAY|APR|MAR|FEB|JAN)-\d{4})", actionline[1]) 
-        raisedTimeBeforFormat = raisedTime.group(0)
-        raisedTimeFormat = transferdate(raisedTimeBeforFormat)
+                #print (actionline)
+        if(actionflag == 1):        
+            raisedTime = re.search(r"(\d{2}-(DEC|NOV|OCT|SEP|AUG|JUL|JUN|MAY|APR|MAR|FEB|JAN)-\d{4})", actionline[1]) 
+            raisedTimeBeforFormat = raisedTime.group(0)
+            raisedTimeFormat = transferdate(raisedTimeBeforFormat)
         #print (raisedTime.group(0))
         count = 0
         for line in actionline:     
             count = count +1
-            if ("Actioned document from IMPLEMENTATION to REVIEW" in line):
+            if ("Actioned document from IMPLEMENTATION to REVIEW" in line) or ("Actioned document from IMPLEMENTATION to CLOSED" in line):
                 #continue
                 InreviewTime = re.search(r"(\d{2}-(DEC|NOV|OCT|SEP|AUG|JUL|JUN|MAY|APR|MAR|FEB|JAN)-\d{4})", actionline[count-3])
                 #print (InreviewTime)
                 InreviewTimeBeforFormat = InreviewTime.group(0)
                 InreviewTimeFormat = transferdate(InreviewTimeBeforFormat)
                 CT = calculateCT(raisedTimeFormat, InreviewTimeFormat)
+                CycleTime.update({PAR_NoTemp:[raisedTimeBeforFormat,InreviewTimeBeforFormat,CT]})
                 break
-                #print (InreviewTime.group(0))
-        
-        
-        #InreviewTimeFormat = transferdate(InreviewTimeBeforFormat)
-        
-        
-        
-        #print (InreviewTimeFormat)
-        
-        CycleTime.update({PAR_NoTemp:[raisedTimeBeforFormat,InreviewTimeBeforFormat,raisedTimeFormat,InreviewTimeFormat, CT]})
+
 
 def calculateCT(raisedTimeFormat, InreviewTimeFormat):
     date1 =  raisedTimeFormat.split('-') 
@@ -146,9 +136,14 @@ def transferdate(dateinStr):
         return dateinStr    
 def cli():  
     global filenum
-    path = "C:\IOSystems\Agusta\FCR\PPC\\test"
+    path = "C:\IOSystems\Agusta\FCR"
     ParseFile(path)
     print (CycleTime)
+    ff = open(f_output, 'w')
+    ff.writelines( "%s\t%s\t%s\t%s\n" % ("PAR","RAISED Time","Review Time","Cycle Time") )
+    for key in CycleTime:
+        ff.writelines( "%s\t%s\t%s\t%s\n" % (key, CycleTime[key][0], CycleTime[key][1], CycleTime[key][2]) )
+    ff.close()
 
 
 if __name__ == "__main__":
