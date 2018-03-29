@@ -19,8 +19,8 @@ from openpyxl.workbook import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Color
 
 f_output = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\CT_output.txt"
-f_result_file = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\Results.xlsx"
-
+f_result_file = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\Results.xlsx"  # output file for CT
+path = "C:\IOSystems\Agusta\FCR"   # input file where have FCR
 #--------------------------------CONSTANTS-------------------------------------
 wdFormatText = 2
 
@@ -145,7 +145,7 @@ def transferdate(dateinStr):
         return dateinStr    
 def cli():  
     global filenum
-    path = "C:\IOSystems\Agusta\FCR"
+
     ParseFile(path)
     print (CycleTime)
     #ff = open(f_output, 'w')

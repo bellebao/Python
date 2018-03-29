@@ -1,4 +1,0 @@
-PAR	RAISED Time	Review Time	Cycle Time
-EPIC_IO_FCR_10148	<built-in method values of dict object at 0x000000000BF90E58>
-EPIC_IO_FCR_3623	<built-in method values of dict object at 0x000000000BF90E58>
-EPIC_IO_FCR_1007	<built-in method values of dict object at 0x000000000BF90E58>
