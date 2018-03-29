@@ -2,7 +2,10 @@
 """
 Created on Tue Mar 20 16:07:45 2018
 
-@author: E435157
+Note: Calculate a cycle time by the PAR status. The end time is inwork/close,
+the initial time is raised. CT is the time buffer between them.
+
+@author: Belle Bao
 """
 
 import sys
@@ -11,7 +14,13 @@ import string
 #import win32com.client
 import re
 import datetime
-f_output = r"C:\IOSystems\Agusta\FCR\PPC\CT_output.txt"
+from openpyxl import load_workbook
+from openpyxl.workbook import Workbook
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Color
+
+f_output = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\CT_output.txt"
+f_result_file = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\Results.xlsx"
+
 #--------------------------------CONSTANTS-------------------------------------
 wdFormatText = 2
 
@@ -139,12 +148,28 @@ def cli():
     path = "C:\IOSystems\Agusta\FCR"
     ParseFile(path)
     print (CycleTime)
-    ff = open(f_output, 'w')
-    ff.writelines( "%s\t%s\t%s\t%s\n" % ("PAR","RAISED Time","Review Time","Cycle Time") )
+    #ff = open(f_output, 'w')
+    #ff.writelines( "%s\t%s\t%s\t%s\n" % ("PAR","RAISED Time","Review Time","Cycle Time") )
+    #for key in CycleTime:
+    #    ff.writelines( "%s\t%s\t%s\t%s\n" % (key, CycleTime[key][0], CycleTime[key][1], CycleTime[key][2]) )
+    #ff.close()
+    #from openpyxl import Workbook
+    wb = Workbook()
+    ###############################################
+    ws1 = wb.active
+    ws1.title = "CycleTime"
+    
+    wsheader = ["PAR No.", "RAISED Time","Review Time","Cycle Time"]
+    ws1.append(wsheader)
     for key in CycleTime:
-        ff.writelines( "%s\t%s\t%s\t%s\n" % (key, CycleTime[key][0], CycleTime[key][1], CycleTime[key][2]) )
-    ff.close()
-
+        row = [key]
+        row.append(CycleTime[key][0])
+        row.append(CycleTime[key][1])
+        row.append(CycleTime[key][2])
+        ws1.append(row)
+    print ("-->Saving File: "+f_result_file)
+    wb.save(f_result_file)          
+    print ("-->Done!")
 
 if __name__ == "__main__":
     cli()        
