@@ -15,7 +15,7 @@ the initial time is raised. CT is the time buffer between them.
 @author: Belle Bao
 """
 
-
+import re
 import os
 #import win32com.client
 
@@ -32,10 +32,9 @@ wdFormatText = 2
 PAR_NoTemp= ''
 CTtemp = ''
 templine = []
-InreviewTime = ''
 Functionslist = {}
 filenum = 0
-
+ICDVersionlist=[]
 
 def ParseFile(path):
     
@@ -55,6 +54,8 @@ def TraceParser(filename):
     fileext = ""
     count = 0
     Functionline = []
+
+    
     
     #filename = str.lower(filename)
     index = filename.rfind('.')
@@ -79,6 +80,10 @@ def TraceParser(filename):
                 count = count +1
                 line=line.strip('\n')
                 Functionline.append(line)
+                
+                ICDversion = re.search(r"(AIRBUS:\w{0,4}.A-DOC;\d{1,2})", line) 
+                
+                ICDVersionlist.append(ICDversion.group(0))
                 #print (Functionline)
         
         Functionslist.update({PAR_NoTemp:Functionline})
@@ -101,6 +106,16 @@ def cli():
         row = [key]
         row.extend(Functionslist.get(key))
         ws1.append(row)
+        
+    ws2 = wb.create_sheet()
+    ws2.title = "VersionList"
+    
+    wsheader = ["Version"]
+    ws2.append(wsheader)
+    for key in ICDVersionlist:
+        row = [key]
+        ws2.append(row)
+        
     print ("-->Saving File: "+f_result_file)
     wb.save(f_result_file)          
     print ("-->Done!")
