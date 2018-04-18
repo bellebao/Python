@@ -18,9 +18,9 @@ from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, Color
 
-f_output = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\CT_output.txt"
-f_result_file = r"C:\Belle\Python\Python-master\Python\CycleTimeforPAR\Results.xlsx"  # output file for CT
-path = "C:\IOSystems\Agusta\FCR"   # input file where have FCR
+f_output = r"C:\IOSystems\A300\PAR\PAR_Analysis\CycleTime.txt"
+f_result_file = r"C:\IOSystems\A300\PAR\PAR_Analysis\Par\CycleTime.xlsx"  # output file for CT
+path = "C:\IOSystems\A300\PAR\PAR_Analysis\Par\PAR"   # input file where have FCR
 #--------------------------------CONSTANTS-------------------------------------
 wdFormatText = 2
 
@@ -33,7 +33,8 @@ templine = []
 InreviewTime = ''
 CycleTime = {}
 filenum = 0
-
+BOETime = {}
+ListBOEKey = []
 
 def ParseFile(path):
     
@@ -53,6 +54,15 @@ def TraceParser(filename):
     fileext = ""
     actionline = []
     actionflag = 0
+    raisedTimeBeforFormat = ""
+    InreviewTimeBeforFormat = ""
+    CloseTimeBeforFormat = ""
+    raisedTimeFormat = ""
+    InreviewTimeFormat = ""
+    CloseTimeFormat = ""
+    CTReview = ""
+    CTClose = ""
+    
 
     #filename = str.lower(filename)
     index = filename.rfind('.')
@@ -60,7 +70,7 @@ def TraceParser(filename):
     if (index != -1):
         fileext = filename[index:]
     
-    if (fileext in [".par", ".fcr", ".scn",".txt"]):
+    if (fileext in [".par", ".fcr", ".scn",".txt",".TXT"]):
         
         filenum = filenum + 1    
         
@@ -88,15 +98,26 @@ def TraceParser(filename):
         count = 0
         for line in actionline:     
             count = count +1
-            if ("Actioned document from IMPLEMENTATION to REVIEW" in line) or ("Actioned document from IMPLEMENTATION to CLOSED" in line):
+            if ("Actioned document from ANALYZE EFFORT to IN WORK" in line):
                 #continue
                 InreviewTime = re.search(r"(\d{2}-(DEC|NOV|OCT|SEP|AUG|JUL|JUN|MAY|APR|MAR|FEB|JAN)-\d{4})", actionline[count-3])
                 #print (InreviewTime)
                 InreviewTimeBeforFormat = InreviewTime.group(0)
                 InreviewTimeFormat = transferdate(InreviewTimeBeforFormat)
-                CT = calculateCT(raisedTimeFormat, InreviewTimeFormat)
-                CycleTime.update({PAR_NoTemp:[raisedTimeBeforFormat,InreviewTimeBeforFormat,CT]})
-                break
+
+            if("Actioned document from IN WORK to CLOSED" in line): 
+                #continue
+                CloseTime = re.search(r"(\d{2}-(DEC|NOV|OCT|SEP|AUG|JUL|JUN|MAY|APR|MAR|FEB|JAN)-\d{4})", actionline[count-3])
+                #print (InreviewTime)
+                CloseTimeBeforFormat = CloseTime.group(0)
+                CloseTimeFormat = transferdate(CloseTimeBeforFormat)
+           
+            if (InreviewTimeBeforFormat != "" ):
+                CTReview = calculateCT(raisedTimeFormat, InreviewTimeFormat)
+            if (CloseTimeBeforFormat!= "" ):
+                CTClose = calculateCT(raisedTimeFormat, CloseTimeFormat)
+                
+        CycleTime.update({PAR_NoTemp:[raisedTimeBeforFormat,InreviewTimeBeforFormat,CloseTimeBeforFormat, CTReview, CTClose, raisedTimeFormat, InreviewTimeFormat, CloseTimeFormat]})
 
 
 def calculateCT(raisedTimeFormat, InreviewTimeFormat):
@@ -147,26 +168,67 @@ def cli():
     global filenum
 
     ParseFile(path)
-    print (CycleTime)
+    #print (CycleTime)
     #ff = open(f_output, 'w')
     #ff.writelines( "%s\t%s\t%s\t%s\n" % ("PAR","RAISED Time","Review Time","Cycle Time") )
     #for key in CycleTime:
     #    ff.writelines( "%s\t%s\t%s\t%s\n" % (key, CycleTime[key][0], CycleTime[key][1], CycleTime[key][2]) )
     #ff.close()
     #from openpyxl import Workbook
+    BOEFORALL= 0 
+    REVIEWNo = 0
+    
     wb = Workbook()
     ###############################################
     ws1 = wb.active
-    ws1.title = "CycleTime"
+    ws1.title = "CycleTime_AllPAR"
     
-    wsheader = ["PAR No.", "RAISED Time","Review Time","Cycle Time"]
+    wsheader = ["PAR No.", "RAISED Time","Review Time","Close Time", "Cycle Time for review(Day)", "Cycle Time for closure(Day)"]
     ws1.append(wsheader)
     for key in CycleTime:
         row = [key]
         row.append(CycleTime[key][0])
         row.append(CycleTime[key][1])
         row.append(CycleTime[key][2])
+        row.append(CycleTime[key][3])
+        row.append(CycleTime[key][4])
         ws1.append(row)
+        
+        if CycleTime[key][1] != "":
+            REVIEWNo = REVIEWNo + 1
+            BOEFORALL = BOEFORALL + CycleTime[key][3]
+            # CALCULATE BOE FOR EACH MONTH
+            BOEKEY = CycleTime[key][1].split('-')[1] + CycleTime[key][1].split('-')[2]
+            if BOEKEY in ListBOEKey:
+                CycleTimeTemp = CycleTime[key][3]+BOETime.get(BOEKEY)[0]
+                CRNoTemp = 1 + BOETime.get(BOEKEY)[1]
+                BOEaverage = CycleTimeTemp/CRNoTemp
+                BOETime.update( {BOEKEY:[CycleTimeTemp,CRNoTemp,BOEaverage] })
+            else:
+                ListBOEKey.append(BOEKEY)
+            if BOEKEY not in BOETime:
+                BOETime.update( {BOEKEY:[CycleTime[key][3],1,CycleTime[key][3]] })
+        
+        # CALCULATE BOE FOR EACH MONTH
+    if REVIEWNo != 0:
+        BOEAverage = BOEFORALL/REVIEWNo    
+    
+    ws2 = wb.create_sheet()
+    ws2.title = "CycleTime_BOE"
+    
+    wsheader = ["Baseline", "Review BOE for A PAR(Day)", "PAR No.", "Review time in Total(Day)"]
+    ws2.append(wsheader)
+    row = ["2017 - 2018 Year"]
+    row.append(BOEAverage)
+    row.append(REVIEWNo)
+    row.append(BOEFORALL)
+    ws2.append(row)
+    for key in BOETime:
+        row = [key]
+        row.append(BOETime[key][2])
+        row.append(BOETime[key][1])
+        row.append(BOETime[key][0])
+        ws2.append(row)
     print ("-->Saving File: "+f_result_file)
     wb.save(f_result_file)          
     print ("-->Done!")

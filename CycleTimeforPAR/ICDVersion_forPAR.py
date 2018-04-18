@@ -81,7 +81,7 @@ def TraceParser(filename):
                 line=line.strip('\n')
                 Functionline.append(line)
                 
-                ICDversion = re.search(r"(AIRBUS:\w{0,4}.A-DOC;\d{1,2})", line) 
+                ICDversion = re.search(r"(C_AIRBUS:\w{0,4}.A-DOC;\d{1,2})", line) 
                 
                 ICDVersionlist.append(ICDversion.group(0))
                 #print (Functionline)
